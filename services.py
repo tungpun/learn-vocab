@@ -22,12 +22,14 @@ def extract_lines(lines):
         words.append(wrap_word(eng, vie))
     return words
 
-
 def build_database(unit):
-    filename = 'unit' + str(unit) + '.txt'
-    with open(filename, 'rb') as f:
-        lines = f.readlines()
-        words = extract_lines(lines)
+    try:
+        filename = 'unit' + str(unit) + '.txt'
+        with open(filename, 'rb') as f:
+            lines = f.readlines()
+            words = extract_lines(lines)
+    except Exception, e:
+        words = []
     return words
 
 
@@ -38,15 +40,20 @@ def get_a_word(words):
             return w
 
 if __name__ == '__main__':
-    all_count = 0
-    right_count = 0
     while (True):
         l = listen(lport, lhost)
-        c = l.wait_for_connection()
+        c = l.wait_for_connection()        
         c.send("Enter unit number: ")
         unit  = int(c.recvline().strip())
         words = build_database(unit)
+
+        if words == []:            
+            c.close()
+            continue                    
+
         random.shuffle(words)
+        all_count = 0
+        right_count = 0
         i = 0
         while (True):
             #word = get_a_word(words)
