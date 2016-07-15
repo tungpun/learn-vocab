@@ -26,10 +26,17 @@ def build_database(unit):
     try:
         filename = 'unit' + str(unit) + '.txt'
         with open(filename, 'rb') as f:
-            lines = f.readlines()
-            words = extract_lines(lines)
+            lines = f.readlines()            
     except Exception, e:
-        words = []
+        print "Can't open file " + filename + " " + str(e)
+        return []
+
+    try:
+        words = extract_lines(lines)
+    except Exception, e:
+        print "Can't extract lines from file " + filename
+        return []
+
     return words
 
 
